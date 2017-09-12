@@ -11,8 +11,10 @@ request({
     if (e || !b) {
         return;
     }
-
+    console.log(b)
     var $ = cheerio.load(b);
+
+
     var result = [];
     var titles = $("#7d ul.t li");
     for (var i = 0; i < titles.length; i++) {
