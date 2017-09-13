@@ -6,7 +6,7 @@ var cheerio = require("cheerio");
 var Iconv = require('iconv').Iconv;
 var iconv = new Iconv('GBK', 'UTF-8');
 
-var temp=[
+var temp = [
     {
         city: "北京",
         url: "http://esf1.fang.com/"
@@ -2545,27 +2545,34 @@ var temp=[
     }
 ]
 
-temp.forEach(function(val){
+temp.forEach(function (val) {
     // 搜房网二手房价格
     request({
         url: val["url"],
         methed: "get",
-        gzip:true
+        gzip: true
     }, function (e, r, b) {
         if (e || !b) {
-            console.log(val['city']+'请求失败！')
+            console.log(val['city'] + '请求失败！')
             return;
         }
         //var result = iconv.convert(new Buffer(b, 'binary')).toString();
         var $ = cheerio.load(b);
         var titles = $(".newcardR ");
         for (var i = 0; i < titles.length; i++) {
-            console.log(val["city"]+":{price:" +
-                JSON.stringify($(titles[i]).children("dl").children("dd").children("p").children("b").eq(1).text())+
-                    ",number:"+
-                JSON.stringify($(titles[i]).children("dl").children("dd").children("p").children("b").eq(0).text())+
-                    "}"
+            console.log("{城市:" + val["city"] + ",8月参考均价:" +
+                JSON.stringify($(titles[i]).children("dl").children("dd").children("p").children("b").eq(1).text()) +
+                ",7月成交量:" +
+                JSON.stringify($(titles[i]).children("dl").children("dd").children("p").children("b").eq(0).text()) +
+                "}"
             );
+
+            //console.log("{city:" + val["city"] + ",price:" +
+            //    JSON.stringify($(titles[i]).children("dl").children("dd").children("p").children("b").eq(1).text()) +
+            //    ",number:" +
+            //    JSON.stringify($(titles[i]).children("dl").children("dd").children("p").children("b").eq(0).text()) +
+            //    "}"
+            //);
         }
     })
 })
