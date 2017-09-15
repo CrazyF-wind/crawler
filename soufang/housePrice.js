@@ -3,13 +3,14 @@
  */
 var request = require("request");
 var cheerio = require("cheerio");
+var fs = require('../utils/file');
 var Iconv = require('iconv').Iconv;
 var iconv = new Iconv('GBK', 'UTF-8');
 
 var temp = [
     {
         city: "北京",
-        url: "http://esf1.fang.com/"
+        url: "http://esf.fang.com/"
     },
     {
         city: "上海",
@@ -2544,6 +2545,7 @@ var temp = [
         url: "http://vancouver.fang.com/"
     }
 ]
+var recordTime=new Date().getTime()
 
 temp.forEach(function (val) {
     // 搜房网二手房价格
@@ -2559,14 +2561,19 @@ temp.forEach(function (val) {
         //var result = iconv.convert(new Buffer(b, 'binary')).toString();
         var $ = cheerio.load(b);
         var titles = $(".newcardR ");
-        for (var i = 0; i < titles.length; i++) {
-            console.log("{城市:" + val["city"] + ",8月参考均价:" +
-                JSON.stringify($(titles[i]).children("dl").children("dd").children("p").children("b").eq(1).text()) +
-                ",7月成交量:" +
-                JSON.stringify($(titles[i]).children("dl").children("dd").children("p").children("b").eq(0).text()) +
-                "}"
-            );
+        var args = ""
 
+        for (var i = 0; i < titles.length; i++) {
+            //console.log("{城市:" + val["city"] + ",8月参考均价:" +
+            //    JSON.stringify($(titles[i]).children("dl").children("dd").children("p").children("b").eq(1).text()) +
+            //    ",7月成交量:" +
+            //    JSON.stringify($(titles[i]).children("dl").children("dd").children("p").children("b").eq(0).text()) +
+            //    "}"
+            //);
+            args += "{'城市':'" + val["city"] + "','9月参考均价':" +
+                Number($(titles[i]).children("dl").children("dd").children("p").children("b").eq(1).text()) +
+                "}";
+            fs("../files/soufang/" + recordTime + ".txt", args);
             //console.log("{city:" + val["city"] + ",price:" +
             //    JSON.stringify($(titles[i]).children("dl").children("dd").children("p").children("b").eq(1).text()) +
             //    ",number:" +
